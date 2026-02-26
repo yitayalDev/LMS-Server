@@ -10,12 +10,27 @@ const server = http.createServer(app);
 initSocket(server);
 
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/lmsuog')
+if (!MONGO_URI) {
+    console.error('FATAL ERROR: MONGO_URI is not defined in environment variables.');
+    // In production, we should exit if critical config is missing
+    if (process.env.NODE_ENV === 'production') {
+        process.exit(1);
+    }
+}
+
+console.log('Attempting to connect to MongoDB...');
+mongoose.connect(MONGO_URI || 'mongodb://localhost:27017/lmsuog')
     .then(() => {
-        console.log('MongoDB Connected');
+        console.log('✅ MongoDB Connected successfully');
         server.listen(PORT, () => {
-            console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+            console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
         });
     })
-    .catch((err: any) => console.log(err));
+    .catch((err: any) => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        if (process.env.NODE_ENV === 'production') {
+            process.exit(1);
+        }
+    });
