@@ -10,10 +10,10 @@ const server = http.createServer(app);
 initSocket(server);
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI;
 
 if (!MONGO_URI) {
-    console.error('FATAL ERROR: MONGO_URI is not defined in environment variables.');
+    console.error('FATAL ERROR: Neither MONGO_URI nor MONGODB_URI is defined in environment variables.');
     // In production, we should exit if critical config is missing
     if (process.env.NODE_ENV === 'production') {
         process.exit(1);
