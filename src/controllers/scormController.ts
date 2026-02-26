@@ -1,5 +1,5 @@
-import { Response } from 'express';
-import multer from 'multer';
+import { Request, Response } from 'express';
+import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';
 
@@ -10,8 +10,8 @@ if (!fs.existsSync(scormDir)) {
 }
 
 const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, scormDir),
-    filename: (_req, file, cb) => {
+    destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => cb(null, scormDir),
+    filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
         const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
         cb(null, `${uniqueSuffix}-${file.originalname}`);
     }
@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 export const scormUpload = multer({
     storage,
-    fileFilter: (_req, file, cb) => {
+    fileFilter: (_req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
         if (file.originalname.endsWith('.zip')) {
             cb(null, true);
         } else {

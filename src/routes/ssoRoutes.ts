@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 
@@ -19,7 +19,7 @@ router.get('/google', passport.authenticate('google', {
 // Google callback
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login', session: false }),
-    (req: any, res) => {
+    (req: any, res: Response) => {
         const token = generateToken(req.user.id);
         const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 

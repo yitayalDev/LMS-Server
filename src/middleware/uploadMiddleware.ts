@@ -51,7 +51,7 @@ const sanitizeFilename = (filename: string): string => {
 
 // Storage configuration with organized paths
 const storage = multer.diskStorage({
-    destination: (req: any, file, cb) => {
+    destination: (req: any, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
         // Organize by user and course
         const userId = req.user?.id || 'anonymous';
         const courseId = req.body.courseId || 'general';
@@ -60,7 +60,7 @@ const storage = multer.diskStorage({
         ensureUploadDir(uploadPath);
         cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
         const timestamp = Date.now();
         const sanitized = sanitizeFilename(file.originalname);
         const ext = path.extname(sanitized);
@@ -161,13 +161,13 @@ export const uploadAudio = multer({
 
 // Avatar upload configuration
 const avatarStorage = multer.diskStorage({
-    destination: (req: any, file, cb) => {
+    destination: (req: any, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
         const userId = req.user?.id || 'temp';
         const uploadPath = path.join('uploads', 'avatars', userId);
         ensureUploadDir(uploadPath);
         cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
         const timestamp = Date.now();
         const ext = path.extname(file.originalname);
         cb(null, `avatar-${timestamp}${ext}`);
@@ -185,12 +185,12 @@ export const uploadAvatar = multer({
 
 // Branding upload configuration
 const brandingStorage = multer.diskStorage({
-    destination: (req: any, file, cb) => {
+    destination: (req: any, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
         const uploadPath = path.join('uploads', 'branding');
         ensureUploadDir(uploadPath);
         cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
         const timestamp = Date.now();
         const ext = path.extname(file.originalname);
         cb(null, `logo-${timestamp}${ext}`);

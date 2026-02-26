@@ -1,5 +1,6 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GoogleStrategy, Profile, VerifyCallback } from 'passport-google-oauth20';
+import { Request } from 'express';
 import User from '../models/User';
 
 export const configurePassport = () => {
@@ -8,7 +9,7 @@ export const configurePassport = () => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder',
         callbackURL: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/sso/google/callback`,
         passReqToCallback: true
-    }, async (req: any, accessToken, refreshToken, profile, done) => {
+    }, async (req: Request, accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
         try {
             // Find or create user
             let user = await User.findOne({
@@ -46,11 +47,11 @@ export const configurePassport = () => {
 
     // Passport session setup is not strictly needed for JWT-based auth,
     // but we can implement it if we want to use passport.authenticate('jwt') later.
-    passport.serializeUser((user: any, done) => {
+    passport.serializeUser((user: any, done: (err: any, id?: any) => void) => {
         done(null, user.id);
     });
 
-    passport.deserializeUser(async (id, done) => {
+    passport.deserializeUser(async (id: string, done: (err: any, user?: any) => void) => {
         try {
             const user = await User.findById(id);
             done(null, user);
