@@ -18,8 +18,16 @@ export const createCheckoutSession = async (req: any, res: Response) => {
     try {
         const { courseId, formData, couponCode } = req.body;
         const userId = req.user.id;
+        const userRole = req.user.role;
 
-        console.log('Creating checkout session for user:', userId, 'course:', courseId);
+        console.log('Creating checkout session for user:', userId, 'Role:', userRole, 'course:', courseId);
+
+        // Security: Only students can buy courses
+        if (userRole !== 'student') {
+            return res.status(403).json({
+                message: 'Only student accounts can purchase or enroll in courses. Please log in with a student account.'
+            });
+        }
 
         const course = await Course.findById(courseId);
         if (!course) {
