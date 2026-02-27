@@ -73,6 +73,14 @@ app.use((err: any, req: any, res: any, next: any) => {
     next(err);
 });
 
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: 'LMS UOG API is running',
+        healthCheck: '/api/health',
+        documentation: 'https://github.com/yitayalDev/LMS-Server'
+    });
+});
+
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
