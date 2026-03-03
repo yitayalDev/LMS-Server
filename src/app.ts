@@ -33,6 +33,7 @@ import notificationRoutes from './routes/notificationRoutes';
 import referralRoutes from './routes/referralRoutes';
 import reportingRoutes from './routes/reportingRoutes';
 import couponRoutes from './routes/couponRoutes';
+import { restrictDemo } from './middleware/demoMiddleware';
 
 const app = express();
 
@@ -95,6 +96,7 @@ app.get('/api/health', (req, res) => {
 app.use(cookieParser());
 app.use(passport.initialize()); // Added passport.initialize()
 app.use(morgan('dev')); // Added morgan
+app.use(restrictDemo);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Routes

@@ -44,6 +44,7 @@ export interface IUser extends Document {
     lastLoginDate?: Date;
     referralCode: string;
     referredBy?: mongoose.Types.ObjectId;
+    isDemo: boolean;
     createdAt: Date;
     comparePassword(password: string): Promise<boolean>;
 }
@@ -96,8 +97,8 @@ const UserSchema: Schema = new Schema({
     },
     loginStreak: { type: Number, default: 0 },
     lastLoginDate: { type: Date },
-    referralCode: { type: String, unique: true },
-    referredBy: { type: Schema.Types.ObjectId, ref: 'User' }
+    referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    isDemo: { type: Boolean, default: false }
 }, { timestamps: true });
 
 UserSchema.pre<IUser>('save', async function () {
