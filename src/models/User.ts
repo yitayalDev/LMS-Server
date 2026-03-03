@@ -98,7 +98,8 @@ const UserSchema: Schema = new Schema({
     loginStreak: { type: Number, default: 0 },
     lastLoginDate: { type: Date },
     referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
-    isDemo: { type: Boolean, default: false }
+    isDemo: { type: Boolean, default: false },
+    referralCode: { type: String, unique: true, sparse: true }
 }, { timestamps: true });
 
 UserSchema.pre<IUser>('save', async function () {

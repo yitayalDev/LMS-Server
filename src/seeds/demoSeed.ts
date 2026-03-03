@@ -6,7 +6,7 @@ dotenv.config();
 
 const seedDemoUsers = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/lmsuog');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lmsuog');
         console.log('Connected to MongoDB');
 
         const demoUsers = [
@@ -43,6 +43,8 @@ const seedDemoUsers = async () => {
                 existingUser.role = userData.role as any;
                 existingUser.isDemo = true;
                 existingUser.isVerified = true;
+                // Explicitly mark password as modified to ensure pre-save hook runs
+                existingUser.markModified('password');
                 await existingUser.save();
                 console.log(`Updated demo user: ${userData.email}`);
             } else {
