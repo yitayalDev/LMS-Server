@@ -5,10 +5,25 @@ let ioInstance: Server;
 export const userSockets = new Map<string, string>(); // userId -> socketId
 
 export const initSocket = (server: HttpServer) => {
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+    const allowedOrigins = [clientUrl, 'http://127.0.0.1:3000', 'http://localhost:5173'];
+
     ioInstance = new Server(server, {
         cors: {
-            origin: process.env.CLIENT_URL || 'http://localhost:3000',
-            methods: ['GET', 'POST']
+            origin: (origin, callback) => {
+                if (!origin) return callback(null, true);
+                const isAllowed = allowedOrigins.includes(origin) ||
+                    origin.startsWith('http://10.') ||
+                    origin.endsWith('.vercel.app');
+
+                if (isAllowed) {
+                    callback(null, true);
+                } else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
+            methods: ['GET', 'POST'],
+            credentials: true
         }
     });
 

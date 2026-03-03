@@ -49,7 +49,13 @@ configurePassport();
 
 // Middleware
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
-const allowedOrigins = [clientUrl, 'http://127.0.0.1:3000', 'http://localhost:5173'];
+const allowedOrigins = [
+    clientUrl,
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',
+    'https://lms-client-adrw.vercel.app',
+    'https://lms-client-z12n.vercel.app'
+];
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -69,7 +75,8 @@ app.use(cors({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cookie'],
+    exposedHeaders: ['Set-Cookie']
 }));
 
 app.use(express.json());
